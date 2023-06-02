@@ -6,31 +6,65 @@ mongoose.connect(process.env.MONGO_URI, {
     useUnifiedTopology: true,
 });
 let Person;
+const personSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    age: Number,
+    favoriteFoods: [String],
+});
+
+Person = mongoose.model("Person", personSchema);
 
 const createAndSavePerson = (done) => {
-    done(null /*, data*/);
+    let person = new Person({
+        name: "Ali",
+        age: 29,
+        favoriteFoods: ["olma", "banan", "uzum"],
+    });
+    person.save(function (err, data) {
+        if (err) return done(err);
+        done(null, data);
+    });
 };
 
 const createManyPeople = (arrayOfPeople, done) => {
-    done(null /*, data*/);
+    Person.create(arrayOfPeople, function (err, data) {
+        if (err) return done(err);
+        done(null, data);
+    });
 };
 
 const findPeopleByName = (personName, done) => {
-    done(null /*, data*/);
+    Person.find({ name: personName }, function (err, data) {
+        if (err) return done(err);
+        done(null, data);
+    });
 };
 
 const findOneByFood = (food, done) => {
-    done(null /*, data*/);
+    Person.findOne({ favoriteFoods: food }, function (err, data) {
+        if (err) return done(err);
+        done(null, data);
+    });
 };
 
 const findPersonById = (personId, done) => {
-    done(null /*, data*/);
+    Person.findById({ _id: personId }, function (err, data) {
+        if (err) return done(err);
+        done(null, data);
+    });
 };
 
 const findEditThenSave = (personId, done) => {
     const foodToAdd = "hamburger";
-
-    done(null /*, data*/);
+    let person = findPersonById(personId);
+    person["favoriteFoods"].push(foodToAdd);
+    person.save(function (err, data) {
+        if (err) return done(err);
+        done(null, data);
+    });
 };
 
 const findAndUpdate = (personName, done) => {
